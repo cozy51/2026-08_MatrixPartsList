@@ -21,6 +21,10 @@ export const plLabel=(list:Pick<PartsList,'plNo'|'plVersion'>)=>{
 };
 export const plIdentityKey=(list:Pick<PartsList,'plNo'|'plVersion'> & {machineId?:string})=>
   `${list.machineId||'SRC350'}\u001f${list.plNo.trim().toUpperCase()}\u001f${normalizePlVersion(list.plVersion).toUpperCase()}`;
+export const findRegisteredPlIds=(existing:PartsList[],candidates:PartsList[]):Set<string>=>{
+  const existingKeys=new Set(existing.map(plIdentityKey));
+  return new Set(candidates.filter(list=>list.plVersion.trim()&&existingKeys.has(plIdentityKey(list))).map(list=>list.id));
+};
 export function findDuplicatePls(existing:PartsList[],candidates:PartsList[]):Map<string,string>{
   const reasons=new Map<string,string>(),existingKeys=new Set(existing.map(plIdentityKey)),counts=new Map<string,number>();
   candidates.forEach(list=>{if(list.plVersion.trim()){const key=plIdentityKey(list);counts.set(key,(counts.get(key)||0)+1)}});

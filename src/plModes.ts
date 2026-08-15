@@ -29,9 +29,21 @@ const normalized = (value: string) => value.normalize('NFKC').toUpperCase()
 
 export function inferMachine(...values: string[]): string {
   const text = values.map(normalized).join(' ');
+  // An explicit machine marker takes precedence over a unit-name match. This
+  // also handles names such as "HAND UNIT (350M3)" that resemble another
+  // machine's unit name.
   if (/\bHU\s*300\b/.test(text)) return 'HU300';
   if (/\bSRC\s*350\b|\b350M\d*\b/.test(text)) return 'SRC350';
-  return '';
+
+  // Otherwise infer the machine from the current unit catalogs. Prefer the
+  // longest matching unit name so "HAND UNIT" wins over the shorter "HAND".
+  const matches = MACHINES.flatMap(machine => machine.modes
+    .map(mode => normalized(mode.label.replace(/^\d+\s+/, '')))
+    .filter(name => text.includes(name))
+    .map(name => ({ machineId: machine.id, length: name.length })));
+  const longest = Math.max(0, ...matches.map(match => match.length));
+  const machines = new Set(matches.filter(match => match.length === longest).map(match => match.machineId));
+  return machines.size === 1 ? [...machines][0] : '';
 }
 
 export function inferPlMode(machineId: string, ...values: string[]): string {

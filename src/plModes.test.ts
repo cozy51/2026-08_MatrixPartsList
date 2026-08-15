@@ -19,6 +19,12 @@ describe('PL display modes', () => {
     expect(inferPlMode('SRC350', 'unknown.csv', 'unknown')).toBe('');
     expect(inferMachine('HU300_01_HOIST_UNIT.csv')).toBe('HU300');
     expect(inferMachine('DRIVE GEAR BOX (350M3)')).toBe('SRC350');
+    expect(inferMachine('HH3321P610_3.csv', 'REAR FRAME (5X_short-MRSP)')).toBe('SRC350');
+    expect(inferMachine('HH0001.csv', 'HAND UNIT')).toBe('HU300');
+    expect(inferMachine('HH0002.csv', 'HAND UNIT (350M3)')).toBe('SRC350');
+    for (const machine of MACHINES) {
+      for (const mode of machine.modes) expect(inferMachine(mode.label)).toBe(machine.id);
+    }
     expect(inferMachine('unknown.csv')).toBe('');
   });
 });
