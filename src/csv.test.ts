@@ -1,0 +1,4 @@
+import{describe,expect,it,vi}from'vitest';import{parseCsv,parsePartsList,partKey}from'./csv';
+vi.stubGlobal('crypto',{randomUUID:()=> 'id'});
+const sample=`機構別部品明細表,,,,\nPLNO,HH110A0010,,PL名称,DRIVE GEAR BOX (350M3)\n,,,,\n出指,改廃,風船,品番,Ver.,品名,数量,単位,材質・メーカー,Size\n,,1,HH110A0040,2,INITIAL WHEEL,1,,SUS,\n,,3,,,HCZr M5X10,2,,,,\n,,C,,,三菱支給品,,,,`;
+describe('CSV parser',()=>{it('quoted comma',()=>expect(parseCsv('a,"b,c"\n')[0]).toEqual(['a','b,c']));it('detects metadata/header and normalizes blank part number',()=>{const p=parsePartsList(sample,'a.csv');expect(p.plNo).toBe('HH110A0010');expect(p.plName).toContain('DRIVE');expect(p.parts).toHaveLength(3);expect(p.parts[1].partNo).toBe('+')});it('uses version and name in identity',()=>{const p=parsePartsList(sample,'a.csv').parts[0];expect(partKey(p)).not.toBe(partKey({...p,version:'3'}))});it('rejects bad files',()=>expect(()=>parsePartsList('a,b','x.csv')).toThrow('ヘッダー'))});
