@@ -9,6 +9,7 @@ const part = (balloon: string, partNo: string): Part => ({
   quantity: '1',
   name: partNo,
   material: '',
+  changeStatus: '',
   additionalInfo: '',
   unavailable: '',
   unitMass: '',
