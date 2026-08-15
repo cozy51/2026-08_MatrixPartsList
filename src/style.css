@@ -321,3 +321,8 @@ th.plhead.pl-unused .standard-marker { background: #8b93a0; }
 .similarity-row { transition: background-color .15s, border-color .15s, box-shadow .15s, transform .15s; }
 .similarity-row:hover { background: #fff3df; border-color: #e3a04b; box-shadow: 0 4px 14px #b76e1e24; transform: translateY(-1px); }
 .similarity-row.is-base:hover { background: #ffead0; }
+
+/* A normal PL occurrence is a circle; unexpected duplicate counts demand attention. */
+td.use { font-size: 18px; line-height: 1; }
+td.use-anomaly { color: #d21f2b !important; background: #fff0f0 !important; font-size: 17px; font-weight: 850; }
+tbody tr:hover td.use-anomaly { background: #ffdede !important; }

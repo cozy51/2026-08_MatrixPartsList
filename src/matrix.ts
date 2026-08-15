@@ -30,6 +30,12 @@ export const setListsVisibilityByMode = (lists: PartsList[], modeId: string, vis
 export const filterPartsByBalloon = (parts: Part[], balloon: string): Part[] =>
   balloon === 'all' ? parts : parts.filter(part => part.balloon === balloon);
 
+/** Return the actual number of matching detail rows in a PL. */
+export const countPartOccurrences = (list: PartsList, part: Part): number => {
+  const key = partKey(part);
+  return list.parts.filter(item => item.balloon.toUpperCase() !== 'C' && partKey(item) === key).length;
+};
+
 export type PlSimilarity = { list: PartsList; score: number; common: number; union: number };
 
 export function calculatePlSimilarities(lists: PartsList[], baseId: string): PlSimilarity[] {

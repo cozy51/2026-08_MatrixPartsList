@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, filterPartsByBalloon, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, countPartOccurrences, filterPartsByBalloon, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -100,5 +100,14 @@ describe('reference workbook ordering', () => {
       'HH110A0010',
       'HH3101K810',
     ]);
+  });
+
+  it('counts duplicate detail rows so exceptional PL counts remain visible', () => {
+    const target = part('1', 'bolt');
+    const partsList = list('HH11000010');
+    partsList.parts = [target, { ...target }, part('2', 'nut')];
+    expect(countPartOccurrences(partsList, target)).toBe(2);
+    expect(countPartOccurrences(partsList, part('2', 'nut'))).toBe(1);
+    expect(countPartOccurrences(partsList, part('3', 'washer'))).toBe(0);
   });
 });
