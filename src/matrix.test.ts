@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, countPartOccurrences, filterPartsByBalloon, filterSupplementParts, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, comparePlParts, countPartOccurrences, filterPartsByBalloon, filterSupplementParts, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -116,5 +116,16 @@ describe('reference workbook ordering', () => {
     const parts = [part('1', '+'), part('1', 'bolt'), part('2', '+')];
     expect(filterSupplementParts(parts, false).map(item => item.partNo)).toEqual(['bolt']);
     expect(filterSupplementParts(parts, true)).toEqual(parts);
+  });
+
+  it('returns common and PL-specific parts for similarity details', () => {
+    const base = list('HH11000010');
+    const target = list('HH11001010');
+    base.parts = [part('1', 'common'), part('2', 'base-only')];
+    target.parts = [part('1', 'common'), part('3', 'target-only')];
+    const detail = comparePlParts(base, target);
+    expect(detail.common.map(item => item.partNo)).toEqual(['common']);
+    expect(detail.baseOnly.map(item => item.partNo)).toEqual(['base-only']);
+    expect(detail.targetOnly.map(item => item.partNo)).toEqual(['target-only']);
   });
 });

@@ -41,6 +41,21 @@ export const countPartOccurrences = (list: PartsList, part: Part): number => {
 
 export type PlSimilarity = { list: PartsList; score: number; common: number; union: number };
 
+export type PlPartComparison = { common: Part[]; baseOnly: Part[]; targetOnly: Part[] };
+
+export function comparePlParts(base: PartsList, target: PartsList): PlPartComparison {
+  const uniqueParts = (list: PartsList) => new Map(
+    list.parts.filter(part => part.balloon.toUpperCase() !== 'C').map(part => [partKey(part), part]),
+  );
+  const baseParts = uniqueParts(base);
+  const targetParts = uniqueParts(target);
+  return {
+    common: [...baseParts].filter(([key]) => targetParts.has(key)).map(([, part]) => part),
+    baseOnly: [...baseParts].filter(([key]) => !targetParts.has(key)).map(([, part]) => part),
+    targetOnly: [...targetParts].filter(([key]) => !baseParts.has(key)).map(([, part]) => part),
+  };
+}
+
 export function calculatePlSimilarities(lists: PartsList[], baseId: string): PlSimilarity[] {
   const base = lists.find(list => list.id === baseId);
   if (!base) return [];
