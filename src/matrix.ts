@@ -30,6 +30,9 @@ export const setListsVisibilityByMode = (lists: PartsList[], modeId: string, vis
 export const filterPartsByBalloon = (parts: Part[], balloon: string): Part[] =>
   balloon === 'all' ? parts : parts.filter(part => part.balloon === balloon);
 
+export const filterSupplementParts = (parts: Part[], showSupplements: boolean): Part[] =>
+  showSupplements ? parts : parts.filter(part => part.partNo.trim() !== '+');
+
 /** Return the actual number of matching detail rows in a PL. */
 export const countPartOccurrences = (list: PartsList, part: Part): number => {
   const key = partKey(part);

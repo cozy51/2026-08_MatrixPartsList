@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, countPartOccurrences, filterPartsByBalloon, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, countPartOccurrences, filterPartsByBalloon, filterSupplementParts, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -110,5 +110,11 @@ describe('reference workbook ordering', () => {
     expect(countPartOccurrences(partsList, target)).toBe(2);
     expect(countPartOccurrences(partsList, part('2', 'nut'))).toBe(1);
     expect(countPartOccurrences(partsList, part('3', 'washer'))).toBe(0);
+  });
+
+  it('can hide every supplement row in one operation', () => {
+    const parts = [part('1', '+'), part('1', 'bolt'), part('2', '+')];
+    expect(filterSupplementParts(parts, false).map(item => item.partNo)).toEqual(['bolt']);
+    expect(filterSupplementParts(parts, true)).toEqual(parts);
   });
 });

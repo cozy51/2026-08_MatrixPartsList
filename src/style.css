@@ -141,8 +141,8 @@ tbody tr.balloon-group-even td,
 tbody tr.balloon-group-even td:nth-child(-n+6) { background: #f3f7ff; }
 tbody tr.balloon-group-odd td,
 tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #eaf1ff; }
-tbody tr.balloon-group-start td { border-top: 2px solid #9eb5e8; }
-tbody tr.balloon-group-start:first-child td { border-top-color: #718dd3; }
+tbody tr.balloon-group-start td { border-top: 1px dashed #aebddd; }
+tbody tr.balloon-group-start:first-child td { border-top-color: #91a6d2; }
 tbody tr td:first-child { font-weight: 750; color: #294f9b; }
 tbody tr:hover td,
 tbody tr:hover td:nth-child(-n+6) { background: #fff0d6; }
@@ -332,3 +332,7 @@ th[data-column="balloon"], td[data-column="balloon"] { text-align: left; }
 .part-select { width: 16px; height: 16px; margin: 0 7px 0 0; vertical-align: -3px; accent-color: #5865e8; cursor: pointer; flex: 0 0 auto; }
 .row-filter.active { border-color: #5865e8; background: #eef0ff; color: #3947c6; font-weight: 750; }
 .clear-selection { white-space: nowrap; }
+
+/* Compact global switch for overview mode without supplement (+) rows. */
+.supplement-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 10px; border: 1px solid #d8dee9; border-radius: 8px; background: #fff; color: #344054; font-weight: 650; white-space: nowrap; cursor: pointer; }
+.supplement-toggle input { width: 16px; height: 16px; margin: 0; accent-color: #5865e8; }
