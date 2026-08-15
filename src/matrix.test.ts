@@ -20,6 +20,7 @@ const list = (plNo: string): PartsList => ({
   fileName: `${plNo}.csv`,
   plNo,
   plName: '',
+  plVersion: '',
   parts: [],
   visible: true,
   importedAt: '',
