@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, isStandardPl, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, collectPartsInSourceOrder, isStandardPl, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -59,6 +59,16 @@ describe('reference workbook ordering', () => {
       { index: 0, start: false },
       { index: 1, start: true },
       { index: 2, start: true },
+    ]);
+  });
+
+  it('keeps supplements separate by balloon and preserves source-list order', () => {
+    const first = list('HH110A0010');
+    first.parts = [part('2', 'ring'), part('1', '+')];
+    const second = list('HH11000010');
+    second.parts = [part('1', 'block'), part('2', '+')];
+    expect(collectPartsInSourceOrder([first, second]).map(({ balloon, partNo }) => `${balloon}:${partNo}`)).toEqual([
+      '1:+', '1:block', '2:ring', '2:+',
     ]);
   });
 

@@ -8,5 +8,16 @@ export function extractPlVersion(fileName:string):string {
   return fileName.match(/_([^_]+)\.(?:csv|xlsx?|xlsm)$/i)?.[1]?.trim() ?? '';
 }
 
-export const plLabel=(list:Pick<PartsList,'plNo'|'plVersion'>)=>list.plVersion?`${list.plNo}_${list.plVersion}`:list.plNo;
-export const partKey=(p:Part)=>[p.partNo,p.version,p.name,p.material,p.quantity].join('\u001f').toLocaleUpperCase();
+export const plLabel=(list:Pick<PartsList,'plNo'|'plVersion'>)=>{
+  const version=list.plVersion?.trim().replace(/^v/i,'');
+  return version?`${list.plNo} v${version}`:list.plNo;
+};
+export const plIdentityKey=(list:Pick<PartsList,'plNo'|'plVersion'>)=>
+  `${list.plNo.trim().toUpperCase()}\u001f${list.plVersion.trim().replace(/^v/i,'').toUpperCase()}`;
+export function findDuplicatePls(existing:PartsList[],candidates:PartsList[]):Map<string,string>{
+  const reasons=new Map<string,string>(),existingKeys=new Set(existing.map(plIdentityKey)),counts=new Map<string,number>();
+  candidates.forEach(list=>{if(list.plVersion.trim()){const key=plIdentityKey(list);counts.set(key,(counts.get(key)||0)+1)}});
+  candidates.forEach(list=>{if(!list.plVersion.trim())return;const key=plIdentityKey(list);if(existingKeys.has(key))reasons.set(list.id,`${plLabel(list)} はすでに登録済みです。`);else if((counts.get(key)||0)>1)reasons.set(list.id,`${plLabel(list)} が読み込みファイル内で重複しています。`)});
+  return reasons;
+}
+export const partKey=(p:Part)=>[p.balloon,p.partNo,p.version,p.name,p.material,p.quantity].join('\u001f').toLocaleUpperCase();

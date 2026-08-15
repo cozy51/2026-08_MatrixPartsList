@@ -1,4 +1,5 @@
 import type { Part, PartsList } from './types';
+import { partKey } from './csv';
 
 const natural = new Intl.Collator('ja', {
   numeric: true,
@@ -22,6 +23,17 @@ export function sortPartsLists(lists: PartsList[]): PartsList[] {
 }
 
 export const isStandardPl = (plNo: string): boolean => /^HH1/i.test(plNo.trim());
+
+export function collectPartsInSourceOrder(lists: PartsList[]): Part[] {
+  const unique = new Map<string, Part>();
+  for (const list of lists) {
+    for (const part of list.parts) {
+      const key = partKey(part);
+      if (part.balloon.toUpperCase() !== 'C' && !unique.has(key)) unique.set(key, part);
+    }
+  }
+  return sortPartsByBalloon([...unique.values()]);
+}
 
 export function buildBalloonGroups(parts: Part[]): { index: number; start: boolean }[] {
   let groupIndex = 0;

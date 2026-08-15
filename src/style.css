@@ -139,9 +139,63 @@ th.plhead.standard-pl { background: #dff3ff; color: #175f95; }
 tbody tr.balloon-group-even td,
 tbody tr.balloon-group-even td:nth-child(-n+6) { background: #f3f7ff; }
 tbody tr.balloon-group-odd td,
-tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #fff; }
+tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #f8f6f1; }
 tbody tr.balloon-group-start td { border-top: 2px solid #9eb5e8; }
 tbody tr.balloon-group-start:first-child td { border-top-color: #718dd3; }
 tbody tr td:first-child { font-weight: 750; color: #294f9b; }
 tbody tr:hover td,
 tbody tr:hover td:nth-child(-n+6) { background: #e8f0ff; }
+
+/* Keep the standard marker readable and on the same line as `PL vVersion`. */
+th.plhead { min-width: 140px; }
+.standard-marker {
+  display: inline-block;
+  width: auto;
+  margin: 0 0 0 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  vertical-align: 1px;
+}
+
+.duplicate-summary {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid #f0a4aa;
+  border-radius: 8px;
+  background: #fff2f3;
+  color: #a51d2a;
+  font-weight: 700;
+}
+.preview-duplicate { position: relative; background: #fff7f7; }
+.duplicate-message {
+  grid-column: 1 / -1;
+  color: #bd2634;
+  font-size: 13px;
+  font-weight: 700;
+}
+button:disabled { cursor: not-allowed; opacity: .5; }
+
+.side-drop {
+  display: grid;
+  place-items: center;
+  gap: 3px;
+  margin-bottom: 14px;
+  padding: 14px 8px;
+  border: 2px dashed #b8c2da;
+  border-radius: 9px;
+  background: #f8faff;
+  color: #52617c;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+.side-drop span { color: #5865e8; font-size: 22px; line-height: 1; }
+.side-drop b { font-size: 13px; }
+.side-drop small { color: #7b879d; font-size: 11px; }
+.side-drop:hover, .side-drop:focus-visible, .side-drop.is-dragging {
+  border-color: #5865e8;
+  background: #eef0ff;
+  outline: none;
+}
+.side-drop.is-dragging { transform: scale(1.02); }
