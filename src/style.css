@@ -145,7 +145,8 @@ tbody tr.balloon-group-start td { border-top: 2px solid #9eb5e8; }
 tbody tr.balloon-group-start:first-child td { border-top-color: #718dd3; }
 tbody tr td:first-child { font-weight: 750; color: #294f9b; }
 tbody tr:hover td,
-tbody tr:hover td:nth-child(-n+6) { background: #e8f0ff; }
+tbody tr:hover td:nth-child(-n+6) { background: #fff0d6; }
+tbody tr:hover td:first-child { box-shadow: inset 4px 0 #e38b2c; }
 
 /* Keep the standard marker readable and on the same line as `PL vVersion`. */
 th.plhead { min-width: 140px; }
@@ -315,3 +316,8 @@ td.pl-unused-cell { background: #eceff3 !important; color: #98a0ad; }
 @media(max-width:1000px) { .similarity-row { grid-template-columns: 30px 1fr 90px; } .similarity-meter,.similarity-row>small { display:none; } }
 
 th.plhead.pl-unused .standard-marker { background: #8b93a0; }
+
+/* Keep hovered comparison rows visually distinct with the same warm accent as the matrix. */
+.similarity-row { transition: background-color .15s, border-color .15s, box-shadow .15s, transform .15s; }
+.similarity-row:hover { background: #fff3df; border-color: #e3a04b; box-shadow: 0 4px 14px #b76e1e24; transform: translateY(-1px); }
+.similarity-row.is-base:hover { background: #ffead0; }
