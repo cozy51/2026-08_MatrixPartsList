@@ -30,6 +30,25 @@ export const setListsVisibilityByMode = (lists: PartsList[], modeId: string, vis
 export const filterPartsByBalloon = (parts: Part[], balloon: string): Part[] =>
   balloon === 'all' ? parts : parts.filter(part => part.balloon === balloon);
 
+export type PlSimilarity = { list: PartsList; score: number; common: number; union: number };
+
+export function calculatePlSimilarities(lists: PartsList[], baseId: string): PlSimilarity[] {
+  const base = lists.find(list => list.id === baseId);
+  if (!base) return [];
+  const baseKeys = new Set(base.parts.filter(part => part.balloon.toUpperCase() !== 'C').map(partKey));
+  return lists.map(list => {
+    const keys = new Set(list.parts.filter(part => part.balloon.toUpperCase() !== 'C').map(partKey));
+    const common = [...baseKeys].filter(key => keys.has(key)).length;
+    const union = new Set([...baseKeys, ...keys]).size;
+    return { list, common, union, score: union ? common / union : 1 };
+  }).sort((a, b) => {
+    const scoreDifference = b.score - a.score;
+    if (scoreDifference) return scoreDifference;
+    if (a.list.id === b.list.id) return 0;
+    return sortPartsLists([a.list, b.list])[0].id === a.list.id ? -1 : 1;
+  });
+}
+
 export function collectPartsInSourceOrder(lists: PartsList[]): Part[] {
   const unique = new Map<string, Part>();
   for (const list of lists) {

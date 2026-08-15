@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, collectPartsInSourceOrder, filterPartsByBalloon, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, calculatePlSimilarities, collectPartsInSourceOrder, filterPartsByBalloon, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -43,6 +43,15 @@ describe('reference workbook ordering', () => {
     const parts = [part('1', 'a'), part('2', 'b'), part('2', 'c')];
     expect(filterPartsByBalloon(parts, '2').map(item => item.partNo)).toEqual(['b', 'c']);
     expect(filterPartsByBalloon(parts, 'all')).toBe(parts);
+  });
+  it('calculates and sorts Jaccard similarity against a selected PL', () => {
+    const base = list('BASE'), close = list('CLOSE'), far = list('FAR');
+    base.parts = [part('1', 'a'), part('2', 'b')];
+    close.parts = [part('1', 'a'), part('2', 'b'), part('3', 'c')];
+    far.parts = [part('9', 'z')];
+    const results = calculatePlSimilarities([far, close, base], base.id);
+    expect(results.map(result => result.list.id)).toEqual([base.id, close.id, far.id]);
+    expect(results[1]).toMatchObject({ common: 2, union: 3, score: 2 / 3 });
   });
   it('sorts numeric balloons and keeps first appearance within a balloon', () => {
     const sorted = sortPartsByBalloon([
