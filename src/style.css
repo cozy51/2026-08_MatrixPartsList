@@ -375,3 +375,13 @@ th[data-column="balloon"], td[data-column="balloon"] { text-align: left; }
 .similarity-detail-table col.detail-material { width: 150px; }
 .similarity-detail-table th:nth-child(1), .similarity-detail-table th:nth-child(3), .similarity-detail-table th:nth-child(5),
 .similarity-detail-table td:nth-child(1), .similarity-detail-table td:nth-child(3), .similarity-detail-table td:nth-child(5) { text-align: center; }
+
+/* Large multi-file previews scroll inside the dialog while actions remain reachable. */
+.modal-bg { padding: 24px; overflow: hidden; }
+.modal { max-height: calc(100vh - 48px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.modal-actions { position: sticky; bottom: 0; z-index: 3; margin: 18px -24px -24px; padding: 14px 24px 20px; border-top: 1px solid #e5e8ef; background: #fff; box-shadow: 0 -8px 18px #16213612; }
+@media(max-width:600px) {
+  .modal-bg { padding: 10px; }
+  .modal { max-height: calc(100vh - 20px); }
+  .modal-actions { bottom: 0; }
+}
