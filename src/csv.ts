@@ -8,12 +8,16 @@ export function extractPlVersion(fileName:string):string {
   return fileName.match(/_([^_]+)\.(?:csv|xlsx?|xlsm)$/i)?.[1]?.trim() ?? '';
 }
 
+export const normalizePlVersion=(value:string)=>{
+  const version=value.trim().replace(/^v/i,'');
+  return /^\d$/.test(version)?version.padStart(2,'0'):version;
+};
 export const plLabel=(list:Pick<PartsList,'plNo'|'plVersion'>)=>{
-  const version=list.plVersion?.trim().replace(/^v/i,'');
+  const version=normalizePlVersion(list.plVersion||'');
   return version?`${list.plNo} v${version}`:list.plNo;
 };
 export const plIdentityKey=(list:Pick<PartsList,'plNo'|'plVersion'>)=>
-  `${list.plNo.trim().toUpperCase()}\u001f${list.plVersion.trim().replace(/^v/i,'').toUpperCase()}`;
+  `${list.plNo.trim().toUpperCase()}\u001f${normalizePlVersion(list.plVersion).toUpperCase()}`;
 export function findDuplicatePls(existing:PartsList[],candidates:PartsList[]):Map<string,string>{
   const reasons=new Map<string,string>(),existingKeys=new Set(existing.map(plIdentityKey)),counts=new Map<string,number>();
   candidates.forEach(list=>{if(list.plVersion.trim()){const key=plIdentityKey(list);counts.set(key,(counts.get(key)||0)+1)}});

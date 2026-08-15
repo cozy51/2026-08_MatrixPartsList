@@ -263,3 +263,26 @@ aside, main { min-height: 0; overflow: hidden; }
 }
 .table-wrap thead th { position: sticky; top: 0; z-index: 5; }
 .table-wrap thead th:nth-child(-n+6) { z-index: 7; }
+
+/* Keep the main filters beside the title in their task order. */
+.toolbar { flex-wrap: wrap; justify-content: flex-start; }
+.toolbar > div:first-child { margin-right: 14px; }
+.balloon-picker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #344054;
+  font-size: 16px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.balloon-picker select {
+  min-width: 92px;
+  padding: 10px 30px 10px 10px;
+  border: 1px solid #cfd6e3;
+  border-radius: 8px;
+  background: #fff;
+  color: #25324a;
+  font: inherit;
+  font-weight: 700;
+}

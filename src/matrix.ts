@@ -27,6 +27,9 @@ export const isStandardPl = (plNo: string): boolean => /^HH1/i.test(plNo.trim())
 export const setListsVisibilityByMode = (lists: PartsList[], modeId: string, visible: boolean): PartsList[] =>
   lists.map(list => list.modeId === modeId ? { ...list, visible } : list);
 
+export const filterPartsByBalloon = (parts: Part[], balloon: string): Part[] =>
+  balloon === 'all' ? parts : parts.filter(part => part.balloon === balloon);
+
 export function collectPartsInSourceOrder(lists: PartsList[]): Part[] {
   const unique = new Map<string, Part>();
   for (const list of lists) {
