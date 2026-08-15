@@ -1,6 +1,7 @@
 export type PlMode = { id: string; label: string };
+export type Machine = { id: string; label: string; modes: PlMode[] };
 
-export const PL_MODES: PlMode[] = [
+const SRC350_MODES: PlMode[] = [
   ['01', 'DRIVE GEAR BOX'], ['02', 'STEERING UNIT(R)'], ['03', 'STEERING UNIT(F)'],
   ['04', 'CORE UNIT'], ['05', 'DIVERGE UNIT(R)'], ['06', 'DIVERGE UNIT(F)'],
   ['07', 'HOIST GEAR BOX'], ['08', 'HOIST BASE UNIT'], ['09', 'HOIST DRUM UNIT'],
@@ -12,16 +13,34 @@ export const PL_MODES: PlMode[] = [
   ['26', 'CLEANER UNIT'], ['27', 'LOGO STICKER'],
 ].map(([id, name]) => ({ id, label: `${id} ${name}` }));
 
+const HU300_MODES: PlMode[] = [
+  ['01', 'HOIST UNIT'], ['02', 'HAND UNIT'], ['03', 'CARRY FIXTURE(JIG)'],
+].map(([id, name]) => ({ id, label: `${id} ${name}` }));
+
+export const MACHINES: Machine[] = [
+  { id: 'SRC350', label: 'SRC350', modes: SRC350_MODES },
+  { id: 'HU300', label: 'HU300', modes: HU300_MODES },
+];
+export const PL_MODES = SRC350_MODES;
+export const plModesForMachine = (machineId: string) => MACHINES.find(machine => machine.id === machineId)?.modes ?? [];
+
 const normalized = (value: string) => value.normalize('NFKC').toUpperCase()
   .replace(/\.(CSV|XLSX?|XLSM)$/i, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
 
-export function inferPlMode(...values: string[]): string {
+export function inferMachine(...values: string[]): string {
+  const text = values.map(normalized).join(' ');
+  if (/\bHU\s*300\b/.test(text)) return 'HU300';
+  if (/\bSRC\s*350\b|\b350M\d*\b/.test(text)) return 'SRC350';
+  return '';
+}
+
+export function inferPlMode(machineId: string, ...values: string[]): string {
   const candidates = values.map(normalized).filter(Boolean);
-  for (const mode of PL_MODES) {
+  for (const mode of plModesForMachine(machineId)) {
     const name = normalized(mode.label.replace(/^\d+\s+/, ''));
     if (candidates.some(value => value.includes(name))) return mode.id;
   }
   return '';
 }
 
-export const plModeLabel = (id: string) => PL_MODES.find(mode => mode.id === id)?.label ?? '属性未設定';
+export const plModeLabel = (machineId: string, id: string) => plModesForMachine(machineId).find(mode => mode.id === id)?.label ?? 'ユニット未設定';
