@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, isStandardPl, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -21,12 +21,18 @@ const list = (plNo: string): PartsList => ({
   plNo,
   plName: '',
   plVersion: '',
+  modeId: '01',
   parts: [],
   visible: true,
   importedAt: '',
 });
 
 describe('reference workbook ordering', () => {
+  it('identifies HH1 prefixes as standard PLs', () => {
+    expect(isStandardPl('HH11000010')).toBe(true);
+    expect(isStandardPl('hh110A0010')).toBe(true);
+    expect(isStandardPl('HH3101K810')).toBe(false);
+  });
   it('sorts numeric balloons and keeps first appearance within a balloon', () => {
     const sorted = sortPartsByBalloon([
       part('4', 'four'),
@@ -46,11 +52,23 @@ describe('reference workbook ordering', () => {
     ]);
   });
 
+  it('marks balloon group boundaries for row styling', () => {
+    const parts = [part('1', 'a'), part('1', 'b'), part('2', 'c'), part('3', 'd')];
+    expect(buildBalloonGroups(parts)).toEqual([
+      { index: 0, start: true },
+      { index: 0, start: false },
+      { index: 1, start: true },
+      { index: 2, start: true },
+    ]);
+  });
+
   it('sorts PL columns naturally, independent of import order', () => {
-    expect(sortPartsLists([list('HH110A0010'), list('HH11002010'), list('HH11001010')]).map(x => x.plNo)).toEqual([
+    expect(sortPartsLists([list('HH3101K810'), list('HH110A0010'), list('HH11002010'), list('HH11000010'), list('HH11001010')]).map(x => x.plNo)).toEqual([
+      'HH11000010',
       'HH11001010',
       'HH11002010',
       'HH110A0010',
+      'HH3101K810',
     ]);
   });
 });

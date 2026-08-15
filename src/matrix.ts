@@ -10,9 +10,26 @@ const natural = new Intl.Collator('ja', {
  * the order in which the browser happens to return selected files.
  */
 export function sortPartsLists(lists: PartsList[]): PartsList[] {
-  return [...lists].sort((a, b) =>
-    natural.compare(a.plNo || a.fileName, b.plNo || b.fileName),
-  );
+  return [...lists].sort((a, b) => {
+    const left = (a.plNo || a.fileName).toUpperCase();
+    const right = (b.plNo || b.fileName).toUpperCase();
+    // Excel's ascending text order puts the numeric part of these fixed-format
+    // PL numbers before alphabetic variants (HH1100... before HH110A...).
+    if (left < right) return -1;
+    if (left > right) return 1;
+    return natural.compare(a.plVersion || '', b.plVersion || '');
+  });
+}
+
+export const isStandardPl = (plNo: string): boolean => /^HH1/i.test(plNo.trim());
+
+export function buildBalloonGroups(parts: Part[]): { index: number; start: boolean }[] {
+  let groupIndex = 0;
+  return parts.map((part, rowIndex) => {
+    const start = rowIndex === 0 || part.balloon !== parts[rowIndex - 1].balloon;
+    if (start && rowIndex > 0) groupIndex += 1;
+    return { index: groupIndex, start };
+  });
 }
 
 /**

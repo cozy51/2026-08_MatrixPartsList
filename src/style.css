@@ -5,8 +5,8 @@
 th:nth-child(1), td:nth-child(1) { left: 0; width: 56px; min-width: 56px; max-width: 56px; }
 th:nth-child(2), td:nth-child(2) { left: 56px; width: 130px; min-width: 130px; max-width: 130px; }
 th:nth-child(3), td:nth-child(3) { left: 186px; width: 56px; min-width: 56px; max-width: 56px; }
-th:nth-child(4), td:nth-child(4) { left: 242px; width: 66px; min-width: 66px; max-width: 66px; }
-th:nth-child(5), td:nth-child(5) { left: 308px; width: 300px; min-width: 300px; max-width: 300px; }
+th:nth-child(4), td:nth-child(4) { left: 242px; width: 300px; min-width: 300px; max-width: 300px; }
+th:nth-child(5), td:nth-child(5) { left: 542px; width: 66px; min-width: 66px; max-width: 66px; }
 th:nth-child(6), td:nth-child(6) { left: 608px; width: 150px; min-width: 150px; max-width: 150px; }
 th[data-column="version"], td[data-column="version"] { text-align: center; }
 
@@ -86,3 +86,62 @@ th.plhead {
   font: inherit;
 }
 .version-input input:placeholder-shown { border-color: #dc3545; background: #fff6f7; }
+
+.standard-badge {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e0edff;
+  color: #2457a6;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+th.plhead.standard-pl { background: #dff3ff; color: #175f95; }
+.standard-marker {
+  display: block;
+  width: fit-content;
+  margin: 4px auto 0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #2368a2;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.side-title small { display: block; margin-top: 3px; color: #667085; font-size: 11px; }
+.mode-picker { display: grid; gap: 3px; color: #667085; font-size: 12px; font-weight: 600; }
+.mode-picker select, .mode-input select {
+  min-width: 220px;
+  padding: 9px 32px 9px 10px;
+  border: 1px solid #cfd6e3;
+  border-radius: 8px;
+  background: #fff;
+  color: #25324a;
+  font: inherit;
+}
+.modal { width: min(920px, 94vw); }
+.preview { grid-template-columns: 120px minmax(150px, 1fr) 125px 250px auto; }
+.mode-input { display: flex; align-items: center; gap: 7px; color: #667085; font-size: 13px; font-weight: 600; }
+.mode-input select { min-width: 205px; padding-top: 7px; padding-bottom: 7px; }
+.mode-input select:has(option[value=""]:checked) { border-color: #dc3545; background: #fff6f7; }
+@media(max-width:900px) {
+  .mode-picker span { display: none; }
+  .mode-picker select { min-width: 180px; }
+  .preview { grid-template-columns: 1fr; gap: 8px; }
+}
+
+/* Visually group consecutive rows that share the same balloon number. These
+   rules also target frozen cells because their background is set separately. */
+tbody tr.balloon-group-even td,
+tbody tr.balloon-group-even td:nth-child(-n+6) { background: #f3f7ff; }
+tbody tr.balloon-group-odd td,
+tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #fff; }
+tbody tr.balloon-group-start td { border-top: 2px solid #9eb5e8; }
+tbody tr.balloon-group-start:first-child td { border-top-color: #718dd3; }
+tbody tr td:first-child { font-weight: 750; color: #294f9b; }
+tbody tr:hover td,
+tbody tr:hover td:nth-child(-n+6) { background: #e8f0ff; }
