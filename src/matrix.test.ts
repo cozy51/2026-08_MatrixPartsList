@@ -22,6 +22,7 @@ const list = (plNo: string): PartsList => ({
   plNo,
   plName: '',
   plVersion: '',
+  machineId: 'SRC350',
   modeId: '01',
   parts: [],
   visible: true,
