@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBalloonGroups, collectPartsInSourceOrder, isStandardPl, sortPartsByBalloon, sortPartsLists } from './matrix';
+import { buildBalloonGroups, collectPartsInSourceOrder, isStandardPl, setListsVisibilityByMode, sortPartsByBalloon, sortPartsLists } from './matrix';
 import type { Part, PartsList } from './types';
 
 const part = (balloon: string, partNo: string): Part => ({
@@ -32,6 +32,12 @@ describe('reference workbook ordering', () => {
     expect(isStandardPl('HH11000010')).toBe(true);
     expect(isStandardPl('hh110A0010')).toBe(true);
     expect(isStandardPl('HH3101K810')).toBe(false);
+  });
+  it('bulk-selects only lists in the active mode', () => {
+    const first = list('A'), second = list('B');
+    first.modeId = '01'; second.modeId = '02'; first.visible = false; second.visible = false;
+    const changed = setListsVisibilityByMode([first, second], '01', true);
+    expect(changed.map(item => item.visible)).toEqual([true, false]);
   });
   it('sorts numeric balloons and keeps first appearance within a balloon', () => {
     const sorted = sortPartsByBalloon([

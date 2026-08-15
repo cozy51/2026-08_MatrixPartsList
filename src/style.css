@@ -113,24 +113,25 @@ th.plhead.standard-pl { background: #dff3ff; color: #175f95; }
 }
 
 .side-title small { display: block; margin-top: 3px; color: #667085; font-size: 11px; }
-.mode-picker { display: grid; gap: 3px; color: #667085; font-size: 12px; font-weight: 600; }
+.mode-picker { display: flex; align-items: center; gap: 12px; color: #344054; font-size: 17px; font-weight: 750; white-space: nowrap; }
 .mode-picker select, .mode-input select {
-  min-width: 220px;
-  padding: 9px 32px 9px 10px;
+  min-width: 270px;
+  padding: 11px 36px 11px 12px;
   border: 1px solid #cfd6e3;
   border-radius: 8px;
   background: #fff;
   color: #25324a;
   font: inherit;
 }
+.mode-picker select { font-size: 17px; font-weight: 700; }
 .modal { width: min(920px, 94vw); }
 .preview { grid-template-columns: 120px minmax(150px, 1fr) 125px 250px auto; }
 .mode-input { display: flex; align-items: center; gap: 7px; color: #667085; font-size: 13px; font-weight: 600; }
 .mode-input select { min-width: 205px; padding-top: 7px; padding-bottom: 7px; }
 .mode-input select:has(option[value=""]:checked) { border-color: #dc3545; background: #fff6f7; }
 @media(max-width:900px) {
-  .mode-picker span { display: none; }
-  .mode-picker select { min-width: 180px; }
+  .mode-picker { gap: 7px; font-size: 15px; }
+  .mode-picker select { min-width: 180px; font-size: 14px; }
   .preview { grid-template-columns: 1fr; gap: 8px; }
 }
 
@@ -139,7 +140,7 @@ th.plhead.standard-pl { background: #dff3ff; color: #175f95; }
 tbody tr.balloon-group-even td,
 tbody tr.balloon-group-even td:nth-child(-n+6) { background: #f3f7ff; }
 tbody tr.balloon-group-odd td,
-tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #f8f6f1; }
+tbody tr.balloon-group-odd td:nth-child(-n+6) { background: #eaf1ff; }
 tbody tr.balloon-group-start td { border-top: 2px solid #9eb5e8; }
 tbody tr.balloon-group-start:first-child td { border-top-color: #718dd3; }
 tbody tr td:first-child { font-weight: 750; color: #294f9b; }
@@ -199,3 +200,66 @@ button:disabled { cursor: not-allowed; opacity: .5; }
   outline: none;
 }
 .side-drop.is-dragging { transform: scale(1.02); }
+
+.selection-actions {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 5px;
+  margin: -3px 0 9px;
+}
+.selection-actions span { color: #667085; font-size: 12px; font-weight: 700; }
+.selection-actions button {
+  padding: 5px 7px;
+  border-radius: 6px;
+  color: #4651bc;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sidebar-pl-label { position: relative; display: inline-block; cursor: help; outline-offset: 3px; }
+.sidebar-pl-tooltip {
+  top: calc(100% + 10px);
+  left: -28px;
+  z-index: 30;
+  max-width: 210px;
+  transform: translate(0, -4px);
+}
+.sidebar-pl-tooltip::before { left: 52px; transform: none; }
+.sidebar-pl-label:hover .sidebar-pl-tooltip,
+.sidebar-pl-label:focus-visible .sidebar-pl-tooltip {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.pl-sequence {
+  margin-right: 4px;
+  color: #344fb0;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+th.plhead { min-width: 155px; }
+
+/* Lock the application to the viewport. The PL list and matrix then become
+   separate scroll containers instead of extending and scrolling the page. */
+html, body, #root, .app { height: 100%; }
+body { overflow: hidden; }
+.app { min-height: 0; overflow: hidden; }
+.layout { min-height: 0; overflow: hidden; }
+aside, main { min-height: 0; overflow: hidden; }
+.pl-list {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.table-wrap {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.table-wrap thead th { position: sticky; top: 0; z-index: 5; }
+.table-wrap thead th:nth-child(-n+6) { z-index: 7; }
