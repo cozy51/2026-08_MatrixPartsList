@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
+import * as XLSX from 'xlsx';
 import { plLabel } from './csv';
-import { calculatePlSimilarities, comparePlParts, isStandardPl } from './matrix';
+import { calculatePlSimilarities, comparePlParts, isStandardPl, type PlPartComparison } from './matrix';
 import type { Part, PartsList } from './types';
 
 type Props = { lists: PartsList[]; sequence: Map<string,number>; baseId: string; onBaseChange: (id: string) => void };
@@ -10,12 +11,36 @@ function DetailSection({ title, parts, tone }: DetailSectionProps) {
   return <section className={`similarity-detail-section ${tone}`}>
     <h3>{title}<span>{parts.length} 部品</span></h3>
     {parts.length ? <div className="similarity-detail-table"><table>
+      <colgroup><col className="detail-balloon"/><col className="detail-part-no"/><col className="detail-version"/><col className="detail-name"/><col className="detail-quantity"/><col className="detail-material"/></colgroup>
       <thead><tr><th>風船</th><th>品番</th><th>Ver.</th><th>品名</th><th>数量</th><th>材質・メーカー</th></tr></thead>
       <tbody>{parts.map(part => <tr key={`${part.balloon}-${part.partNo}-${part.version}-${part.name}-${part.quantity}`}>
         <td>{part.balloon}</td><td>{part.partNo}</td><td>{part.version}</td><td>{part.name}</td><td>{part.quantity}</td><td>{part.material}</td>
       </tr>)}</tbody>
     </table></div> : <p>該当する部品はありません。</p>}
   </section>;
+}
+
+const partRows = (parts: Part[]) => [
+  ['風船', '品番', 'Ver.', '品名', '数量', '材質・メーカー'],
+  ...parts.map(part => [part.balloon, part.partNo, part.version, part.name, part.quantity, part.material]),
+];
+
+function exportComparison(base: PartsList, target: PartsList, detail: PlPartComparison, score: number) {
+  const workbook = XLSX.utils.book_new();
+  const summary = [
+    ['基準PL', plLabel(base)],
+    ['比較PL', plLabel(target)],
+    ['類似度', `${(score * 100).toFixed(1)}%`],
+    ['共通部品', detail.common.length],
+    ['基準PLのみ', detail.baseOnly.length],
+    ['比較PLのみ', detail.targetOnly.length],
+  ];
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), '比較概要');
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(partRows(detail.common)), '共通部品');
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(partRows(detail.baseOnly)), '基準PLのみ');
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(partRows(detail.targetOnly)), '比較PLのみ');
+  const safeName = `${base.plNo}-${target.plNo}`.replace(/[\\/:*?"<>|]/g, '_');
+  XLSX.writeFile(workbook, `PL比較_${safeName}.xlsx`);
 }
 
 export default function SimilarityView({ lists, sequence, baseId, onBaseChange }: Props) {
@@ -47,6 +72,7 @@ export default function SimilarityView({ lists, sequence, baseId, onBaseChange }
           <span className="similarity-chevron" aria-hidden="true">⌄</span>
         </button>
         {detail && <div className="similarity-details">
+          <div className="similarity-details-actions"><span>{plLabel(base)} と {plLabel(result.list)} の比較結果</span><button type="button" onClick={() => exportComparison(base, result.list, detail, result.score)}>Excel出力</button></div>
           <DetailSection title="共通部品" parts={detail.common} tone="common" />
           <DetailSection title={`${plLabel(base)} のみ`} parts={detail.baseOnly} tone="base" />
           <DetailSection title={`${plLabel(result.list)} のみ`} parts={detail.targetOnly} tone="target" />
