@@ -1,0 +1,55 @@
+import * as XLSX from 'xlsx';
+import { MACHINES } from './plModes';
+import type { PartsList } from './types';
+
+type Props = {
+  lists: PartsList[];
+  onOpenUnit: (machineId: string, modeId: string) => void;
+};
+
+export function buildMachinePartsListRows(machine: (typeof MACHINES)[number], lists: PartsList[]) {
+  const modeOrder = new Map(machine.modes.map((mode, index) => [mode.id, index]));
+  return lists
+    .filter(list => list.machineId === machine.id)
+    .sort((a, b) => (modeOrder.get(a.modeId) ?? 999) - (modeOrder.get(b.modeId) ?? 999)
+      || a.plNo.localeCompare(b.plNo, undefined, { numeric: true }))
+    .map(list => ({
+      ユニット名: machine.modes.find(mode => mode.id === list.modeId)?.label ?? list.modeId,
+      PL: list.plNo,
+      PL名称: list.plName,
+      'PL Ver.': list.plVersion,
+    }));
+}
+
+function exportMachinePartsLists(machine: (typeof MACHINES)[number], lists: PartsList[]) {
+  const rows = buildMachinePartsListRows(machine, lists);
+  const sheet = XLSX.utils.json_to_sheet(rows, { header: ['ユニット名', 'PL', 'PL名称', 'PL Ver.'] });
+  sheet['!cols'] = [{ wch: 28 }, { wch: 18 }, { wch: 42 }, { wch: 10 }];
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, sheet, machine.label);
+  XLSX.writeFile(workbook, `${machine.label}_登録PL一覧.xlsx`);
+}
+
+export default function DashboardView({ lists, onOpenUnit }: Props) {
+  return <section className="dashboard-view" aria-labelledby="dashboard-title">
+    <div className="dashboard-heading">
+      <div><h2 id="dashboard-title">登録状況ダッシュボード</h2><p>機種・ユニット別の登録件数を一覧できます。</p></div>
+      <strong>{lists.length}<span> 登録PL</span></strong>
+    </div>
+    <div className="machine-tree">{MACHINES.map(machine => {
+      const machineLists = lists.filter(list => list.machineId === machine.id);
+      return <section className="machine-branch" key={machine.id}>
+        <div className="machine-node"><span className="tree-icon" aria-hidden="true">▾</span><div><b>{machine.label}</b><small>{machine.modes.length} ユニット</small></div><div className="machine-node-actions"><strong>{machineLists.length}件</strong><button type="button" onClick={() => exportMachinePartsLists(machine, lists)}>Excel DL</button></div></div>
+        <ul>{machine.modes.map(mode => {
+          const count = machineLists.filter(list => list.modeId === mode.id).length;
+          return <li key={mode.id}>
+            <span className="tree-line" aria-hidden="true" />
+            <button type="button" onClick={() => onOpenUnit(machine.id, mode.id)} aria-label={`${machine.label} ${mode.label}の部品表を開く、${count}件`}>
+              <span>{mode.label}</span><strong>{count}件</strong><span className="dashboard-link">部品表へ →</span>
+            </button>
+          </li>;
+        })}</ul>
+      </section>;
+    })}</div>
+  </section>;
+}
