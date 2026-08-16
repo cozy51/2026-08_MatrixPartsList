@@ -44,6 +44,29 @@ CSV・Excel読み込み時はファイル名とPL名称から機種・ユニッ�
 
 UTF-8 CSVに対応します。不正な文字コード、空ファイル、必須見出し（風船・品番・品名）がないファイルはエラー表示され、既存データは維持されます。
 
+## アイコン・Favicon
+
+アプリのアイコンは、マトリックス部品表そのものを図案化しています。左の3本のバーが部品行、右の2列のドットがPL列で、使用部品を `●` として示します。1列目は選択中のPLとして白いピルで強調しています。配色はUIと同じインディゴ〜バイオレットのグラデーションです。
+
+生成物は `public/` にあります。
+
+| ファイル | 用途 |
+| --- | --- |
+| `icon.svg` | アイコン原本（ヘッダーのロゴ `src/BrandMark.tsx` と同じ図柄） |
+| `favicon.svg` / `favicon.ico` | ブラウザーのタブ。16px前後でも潰れないよう行を2本に減らした簡略版 |
+| `apple-touch-icon.png` | iOSのホーム画面（180px・透過なし） |
+| `icon-192.png` / `icon-512.png` | PWA・`site.webmanifest` |
+| `icon-maskable-*.png` | Androidなどの切り抜き（安全領域へ縮小済み） |
+
+デザインを変更したときは、次のコマンドで全サイズを再生成します。
+
+```bash
+pip install cairosvg pillow
+python3 scripts/generate-icons.py
+```
+
+`src/BrandMark.tsx` は同じ図柄をReactコンポーネントとして持っているため、デザインを変えた場合は合わせて更新します。
+
 ## Google Cloud / Drive設定
 
 1. Google Cloud Consoleでプロジェクトを作成し、**Google Drive API**を有効にします。
