@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { MACHINES } from './plModes';
+import { sortPartsLists } from './matrix';
 import type { PartsList } from './types';
 
 type Props = {
@@ -9,15 +10,10 @@ type Props = {
   onNoteChange: (listId: string, note: string) => void;
 };
 
-const sortLists = (lists: PartsList[]) => [...lists]
-  .sort((a, b) => a.plNo.localeCompare(b.plNo, undefined, { numeric: true }) || a.plVersion.localeCompare(b.plVersion, undefined, { numeric: true }));
-
 export function buildMachinePartsListRows(machine: (typeof MACHINES)[number], lists: PartsList[]) {
   const modeOrder = new Map(machine.modes.map((mode, index) => [mode.id, index]));
-  return lists
-    .filter(list => list.machineId === machine.id)
-    .sort((a, b) => (modeOrder.get(a.modeId) ?? 999) - (modeOrder.get(b.modeId) ?? 999)
-      || a.plNo.localeCompare(b.plNo, undefined, { numeric: true }))
+  return sortPartsLists(lists.filter(list => list.machineId === machine.id))
+    .sort((a, b) => (modeOrder.get(a.modeId) ?? 999) - (modeOrder.get(b.modeId) ?? 999))
     .map(list => ({
       ユニット名: machine.modes.find(mode => mode.id === list.modeId)?.label ?? list.modeId,
       PL: list.plNo,
@@ -54,7 +50,7 @@ export default function DashboardView({ lists, onOpenUnit, onNoteChange }: Props
       return <section className="machine-branch" key={machine.id}>
         <div className="machine-node"><span className="tree-icon" aria-hidden="true">▾</span><div><b>{machine.label}</b><small>{machine.modes.length} ユニット</small></div><div className="machine-node-actions"><strong>{machineLists.length}件</strong><button type="button" onClick={() => exportMachinePartsLists(machine, lists)}>Excel DL</button></div></div>
         <ul>{machine.modes.map(mode => {
-          const unitLists = sortLists(machineLists.filter(list => list.modeId === mode.id));
+          const unitLists = sortPartsLists(machineLists.filter(list => list.modeId === mode.id));
           const unitKey = `${machine.id}-${mode.id}`;
           const expanded = expandedUnits.has(unitKey);
           return <li className={expanded ? 'is-expanded' : ''} key={mode.id}>
