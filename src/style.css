@@ -421,7 +421,7 @@ th[data-column="balloon"], td[data-column="balloon"] { text-align: left; }
   .machine-confirm { grid-column: 1; }
 }
 
-/* Dashboard: machine -> unit tree with direct navigation into each matrix. */
+/* Dashboard: machine -> unit tree with direct navigation into each parts list. */
 .dashboard-view {
   min-height: 0;
   overflow: auto;
@@ -441,7 +441,9 @@ th[data-column="balloon"], td[data-column="balloon"] { text-align: left; }
 .machine-node .tree-icon { font-size: 13px; }
 .machine-node b { display: block; font-size: 18px; }
 .machine-node small { display: block; margin-top: 2px; color: #6874a9; }
-.machine-node > strong { min-width: 48px; padding: 5px 9px; border-radius: 999px; background: #fff; text-align: center; }
+.machine-node-actions { display: flex; align-items: center; gap: 8px; }
+.machine-node-actions > strong { min-width: 48px; padding: 5px 9px; border-radius: 999px; background: #fff; text-align: center; }
+.machine-node-actions > button { padding: 6px 9px; border-color: #aeb8eb; color: #3547ad; font-size: 12px; font-weight: 750; }
 .machine-branch ul { margin: 0; padding: 8px 12px 12px 30px; list-style: none; }
 .machine-branch li { position: relative; padding-left: 18px; }
 .machine-branch li::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; border-left: 1px solid #bec8dd; }
@@ -457,3 +459,21 @@ th[data-column="balloon"], td[data-column="balloon"] { text-align: left; }
   .machine-branch li button { grid-template-columns: 1fr auto; }
   .dashboard-link { grid-column: 1 / -1; margin-top: 3px; text-align: left; }
 }
+
+/* Settings dialog opened from the header gear button. */
+.settings-modal { width: min(620px, 94vw); }
+.settings-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.settings-heading h2 { margin: 0; }
+.settings-heading p { margin: 5px 0 0; color: #7b8493; font-size: 13px; }
+.settings-heading > button { padding: 3px 9px; border: 0; font-size: 22px; }
+.settings-section { margin-top: 20px; padding-top: 17px; border-top: 1px solid #e5e8ef; }
+.settings-section h3 { margin: 0 0 12px; font-size: 15px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.settings-row small { display: block; margin-top: 5px; color: #7b8493; }
+.settings-actions { display: flex; gap: 9px; }
+.settings-actions label { padding: 9px 13px; border: 1px solid #d8dee9; border-radius: 8px; color: #344054; cursor: pointer; }
+.settings-actions label:hover { border-color: #5a66e8; }
+.settings-machine-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 9px; }
+.settings-machine-counts > div { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; background: #f3f5ff; }
+.settings-machine-counts strong { color: #4651bc; }
+.settings-modal .modal-actions { margin-top: 22px; }
