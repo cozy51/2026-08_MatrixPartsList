@@ -75,6 +75,6 @@ python3 scripts/generate-icons.py
 4. 承認済みJavaScript生成元へ開発用の `http://localhost:5173` と本番URLを登録します。
 5. `.env.local` に `VITE_GOOGLE_CLIENT_ID=...apps.googleusercontent.com` を設定し、開発サーバーを再起動します。
 
-クライアントシークレットは不要であり、フロントエンドへ設定しないでください。ログイン後は `drive.file` スコープを使い、マイドライブの `WebAppsData/MatrixPartsList/MatrixPartsList-latest.json` に保存します。旧保存先 `WebAppData` にだけデータがある場合は一度読み込み、次回の書き込みで新しい `WebAppsData` へ移行します。同期前にクラウドの `revision` を確認し、クラウドが新しければ選択画面を出します。通信エラーでもローカルデータと操作は維持されます。Googleのアクセストークンはメモリー内だけに保持します。
+クライアントシークレットは不要であり、フロントエンドへ設定しないでください。ログイン後は `drive.file` スコープを使い、`WebAppsData` フォルダー（Folder ID: `1SWmOnYn98EN5nZs7Jsi3vBLkuJa4B_O6`）配下の `MatrixPartsList/MatrixPartsList-latest.json` に保存します。保存先の `WebAppsData` は名前ではなくこのFolder IDで直接指定します。名前で見つかる旧 `WebAppsData` や、さらに古い `WebAppData` にだけデータがある場合は一度読み込み、次回の書き込みでFolder ID指定の `WebAppsData` へ移行します。同期前にクラウドの `revision` を確認し、クラウドが新しければ選択画面を出します。通信エラーでもローカルデータと操作は維持されます。Googleのアクセストークンはメモリー内だけに保持します。
 
 > `drive.file` はこのアプリが作成したファイルだけにアクセスする安全性を優先したスコープです。別環境で既に作られた同名ファイルを自動検出する必要がある運用では、Googleの審査要件を確認したうえでスコープ設計を見直してください。
